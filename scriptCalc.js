@@ -101,8 +101,9 @@ function updateDisplay(e, state) {
             console.log('nanlength:', nanLength);
             console.log('input2length:', input2Length);
             console.log('inputOne: ', inputOne);    
-            console.log('inputTwo: ', inputTwo);    
+            console.log('inputTwo: ', inputTwo);
 
+            loadInput2(inputTwo);
             displayCalc.innerHTML = inputOne + operator + inputTwo;
 
 
@@ -138,7 +139,10 @@ function loadOperator(e) {
     return;
 }
 
-function loadInput2(){
-    input2 = key;
+function loadInput2(input){
+    input2 = input;
 }
 
+function calculate() {
+    
+}
