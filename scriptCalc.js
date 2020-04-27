@@ -1,5 +1,5 @@
 //update progress, input 1, operator & input 2 done
-//update untuk handling titik / decimal done
+//update untuk handling titik / decimal , masih ada bug bila key titik '.' diinput lebih dari satu kali, seharusnya hanya bisa diinput sekali per input number
 //on progress perhitungan matematika
 
 keyCalc = document.querySelector('.calculator__keys');
@@ -16,10 +16,13 @@ let allInput =false;
 let key='';
 let opClickCounter=0;
 let testVar = '';
+let testVar2 = '';
 keyCalc.addEventListener('click', function (e) {
     
-    testVar = parseFloat('.');
+    testVar = parseFloat('..23');
+    testVar2 = parseFloat('.23..34');
     console.log(testVar);
+    console.log(testVar2);
     
 
     const keyContent = e.target.textContent;
