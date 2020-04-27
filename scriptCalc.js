@@ -1,5 +1,6 @@
-//update progress, input 1, operator & input 2 sudah dapat
-//outstanding untuk handling titik / decimal
+//update progress, input 1, operator & input 2 done
+//update untuk handling titik / decimal done
+//on progress perhitungan matematika
 
 keyCalc = document.querySelector('.calculator__keys');
 let input1 ='';
@@ -14,14 +15,19 @@ let allInput =false;
 
 let key='';
 let opClickCounter=0;
+let testVar = '';
 keyCalc.addEventListener('click', function (e) {
     
+    testVar = parseFloat('.');
+    console.log(testVar);
+    
+
     const keyContent = e.target.textContent;
     
         if(!opLoaded && !input2loaded){
 
             if( keyContent == '0'||keyContent=='1'||keyContent=='2'||keyContent=='3'||keyContent=='4'
-            ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){     //cek input apakah number
+            ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'||keyContent =='.'){     //cek input apakah number, tambah input '.'
                 
             input1loaded = true;
             updateDisplay(e, input1loaded);
@@ -39,10 +45,10 @@ keyCalc.addEventListener('click', function (e) {
 
     } else if(opLoaded && input1loaded){       //kondisi untuk mendetektsi number 2
         if( keyContent == '0'||keyContent=='1'||keyContent=='2'||keyContent=='3'||keyContent=='4'
-        ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){
+        ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'||keyContent=='.'){
             input2loaded = true;
             updateDisplay(e, input2loaded);
-            loadInput2();
+            // loadInput2();
         } 
     }
     
@@ -60,9 +66,9 @@ function updateDisplay(e, state) {
      if(state && opClickCounter < 2){         //cek apakah tombol operator diklik lebih dari sekali 
         displayCalc.innerHTML = key;
 
-     } else if(opClickCounter >= 2){        //bila operator diklik lebih dari sekali, maka blok ini dijalankan, berfungsi hanya menampilkan satu operator yg dipilih
+     } else if(opClickCounter >= 2){        
 
-        if(input2loaded){           //on progress tampilkan input 2 
+        if(input2loaded){           //block ini menangkap variabel key, kemuadian di konversi ke integer, kemudian memisahkan karakter numerik untuk input1, karakter non numerik, kemudian karakter numerik untuk input2 
             // console.log('key for input2: ',key);       
             let keyArr = Array.from(key);
             let keyValid ='';
@@ -76,24 +82,31 @@ function updateDisplay(e, state) {
             let inputOne ='';
             let inputTwo ='';
 
-            keyArr.forEach(char => {
-                bufferKey = parseInt(char);
-                if(isNaN(bufferKey)){
-                    nanLength++;
-                    // keyArr.shift()
-                    nanChecker = true;    
-                }else if(!nanChecker){
-                    inputOne += bufferKey;
+            keyArr.forEach(char => { 
+                
+                if(char=='.' && !nanChecker){  //cek jika key adalah '.' di input1
+                    inputOne += char;
                     input1Length++;
-                }else {
-                    inputTwo +=bufferKey;
+                }else if(char=='.' && nanChecker){  //cek jika key adalah '.' di input2
+                    inputTwo +=char;
                     input2Length++;
+                }else {
+
+                    bufferKey = parseInt(char);
+                    if(isNaN(bufferKey)){       //cek jika key adalah operator / NaN
+                        nanLength++;
+                        // keyArr.shift()
+                        nanChecker = true;    
+                    }else if(!nanChecker){      //cek jika bukan NaN dan jika input1
+                        // inputOne += bufferKey;
+                        inputOne += char;
+                        input1Length++;
+                    }else {                     //cek jika bukan NaN dan jika input2
+                        // inputTwo +=bufferKey;
+                        inputTwo +=char;
+                        input2Length++;
+                    }
                 }
-                // console.log('keyarrAfter: ',keyArr);
-                 
-                // bufferKeyValid += bufferKey;
-                // console.log('bufferkeyValid: ',bufferKeyValid);
-                // keyValid = bufferKeyValid;
 
                 
             })
@@ -107,7 +120,7 @@ function updateDisplay(e, state) {
             displayCalc.innerHTML = inputOne + operator + inputTwo;
 
 
-        }else if(!input2loaded){
+        }else if(!input2loaded){    //bila operator diklik lebih dari sekali, maka blok ini dijalankan, berfungsi hanya menampilkan satu operator yg dipilih
             
             const operator1 = loadOperator(e);
             console.log('operator1: ',operator1)
