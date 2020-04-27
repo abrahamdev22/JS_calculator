@@ -1,6 +1,8 @@
 //update progress, input 1, operator & input 2 done
 //update untuk handling titik / decimal , masih ada bug bila key titik '.' diinput lebih dari satu kali, seharusnya hanya bisa diinput sekali per input number
-//on progress perhitungan matematika
+//on proress solving bug decimal klik lebih dari 1 x, sedang coba tambahkan if cond saat menangkap input 1 --solved
+//decimal bug, hint : coba pecah cond ||keyContent =='.', bikin if cond sendiri --done
+//on progress, operasi matematika, memproses semua variabel input2 input2 dan operator
 
 keyCalc = document.querySelector('.calculator__keys');
 let input1 ='';
@@ -17,25 +19,38 @@ let key='';
 let opClickCounter=0;
 let testVar = '';
 let testVar2 = '';
+let decButtonCounter = 0;
+
+
 keyCalc.addEventListener('click', function (e) {
     
-    testVar = parseFloat('..23');
-    testVar2 = parseFloat('.23..34');
-    console.log(testVar);
-    console.log(testVar2);
+    // testVar = parseFloat('..23');       //sekedar tes 
+    // testVar2 = parseFloat('.23..34');
+    // console.log(testVar);
+    // console.log(testVar2);
     
-
     const keyContent = e.target.textContent;
     
+
         if(!opLoaded && !input2loaded){
+            
+            if(keyContent == '.'&& decButtonCounter <1){    //penanda bahwa button decimal sudah pernah di klik    
+                decButtonCounter++;
+                input1loaded = true;
+                updateDisplay(e, input1loaded);
+                loadInput1();
+                
+            }else
 
             if( keyContent == '0'||keyContent=='1'||keyContent=='2'||keyContent=='3'||keyContent=='4'
-            ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'||keyContent =='.'){     //cek input apakah number, tambah input '.'
+            ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){     //cek input apakah number, tambah input '.'
+            
+                // console.log('second decimal pressed');
+                input1loaded = true;
+                updateDisplay(e, input1loaded);
+                loadInput1();
                 
-            input1loaded = true;
-            updateDisplay(e, input1loaded);
-            loadInput1();
-        }
+        } console.log('decButtonCounter: ',decButtonCounter);
         
 
     } if(e.target.classList=='key--operator' && input1loaded){ //cek input apakah operator, setelah input number masuk
@@ -44,11 +59,20 @@ keyCalc.addEventListener('click', function (e) {
         loadOperator(e);
         updateDisplay(e, opLoaded);
         // numState2 = true;
+        decButtonCounter = 0;   //counter button decimal di reset, supaya input 2 bisa terima button decimal lagi
         console.log('op: ', operator);
 
     } else if(opLoaded && input1loaded){       //kondisi untuk mendetektsi number 2
+
+        if(keyContent == '.'&& decButtonCounter <1){    //penanda bahwa button decimal sudah pernah di klik    
+            decButtonCounter++;
+            input2loaded = true;
+            updateDisplay(e, input2loaded);
+            
+        }else
+
         if( keyContent == '0'||keyContent=='1'||keyContent=='2'||keyContent=='3'||keyContent=='4'
-        ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'||keyContent=='.'){
+        ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){
             input2loaded = true;
             updateDisplay(e, input2loaded);
             // loadInput2();
@@ -87,7 +111,7 @@ function updateDisplay(e, state) {
 
             keyArr.forEach(char => { 
                 
-                if(char=='.' && !nanChecker){  //cek jika key adalah '.' di input1
+                if(char=='.' && !nanChecker){  //cek jika key adalah '.' di input1  , //blok ini supaya karakter decimal tidak masuk ke proses parseInt
                     inputOne += char;
                     input1Length++;
                 }else if(char=='.' && nanChecker){  //cek jika key adalah '.' di input2
@@ -126,7 +150,7 @@ function updateDisplay(e, state) {
         }else if(!input2loaded){    //bila operator diklik lebih dari sekali, maka blok ini dijalankan, berfungsi hanya menampilkan satu operator yg dipilih
             
             const operator1 = loadOperator(e);
-            console.log('operator1: ',operator1)
+            // console.log('operator1: ',operator1)
             let keyValid='';
             let keyArr = Array.from(key);
             // console.log('keyArr: ',keyArr);
@@ -136,7 +160,7 @@ function updateDisplay(e, state) {
                 }
             })
             displayCalc.innerHTML = keyValid+operator1;
-            console.log('keyvalid: ',keyValid);
+            // console.log('keyvalid: ',keyValid);
         };
      }
         
