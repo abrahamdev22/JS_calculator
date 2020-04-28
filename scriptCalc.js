@@ -2,8 +2,8 @@
 //update untuk handling titik / decimal , masih ada bug bila key titik '.' diinput lebih dari satu kali, seharusnya hanya bisa diinput sekali per input number -solved
 //on proress solving bug decimal klik lebih dari 1 x, sedang coba tambahkan if cond saat menangkap input 1 --solved
 //decimal bug, hint : coba pecah cond ||keyContent =='.', bikin if cond sendiri --done
-//on progress del button untuk remove karakter --done sampai dengan input1
-//del button hanya available dan dicek disetiap input number(1&2) , valid saat remove input1, on progress saat operator & input2
+//on progress del button untuk remove karakter --done sampai dengan input1 & operator
+//del button hanya available dan dicek disetiap input number(1&2) , available saat remove input1, tidak aktif saat operator dipilih, on progress saat remove input2
 //next, operasi matematika, memproses semua variabel input2 input2 dan operator
 
 
@@ -32,6 +32,7 @@ keyCalc.addEventListener('click', function (e) {
         delButtonPressed = true;            //penanda bahwa button C sudah di klik
         updateDisplay(e, input1loaded, delButtonPressed);
         loadInput1();
+        decButtonCounter=0;
     }else
 
     if(keyContent ==='AC'){     //cek jika button AC di klik
@@ -87,7 +88,7 @@ keyCalc.addEventListener('click', function (e) {
             updateDisplay(e, input2loaded);
             // loadInput2();
         } 
-        opLoaded = false;
+        // opLoaded = false;
     }
     
     console.log('input1: ',input1);
@@ -129,7 +130,7 @@ function updateDisplay(e, state, delButton) {
         }
         
 
-     } else if(opClickCounter >= 2){        
+     } else if(opClickCounter >= 2){        //cek apabila tombol operator diklik lebih dari sekali
 
         if(input2loaded){           //block ini menangkap variabel key, kemuadian di konversi ke integer, kemudian memisahkan karakter numerik untuk input1, karakter non numerik, kemudian karakter numerik untuk input2 
             // console.log('key for input2: ',key);       
