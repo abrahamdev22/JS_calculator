@@ -8,9 +8,9 @@
 //button C sudah berhasil menghapus input number 2
 
 //list bug:
-//pada input1 bila button decimal diklik, kemudian number diinput setelahnya, lalu dihapus, dan selanjutnya diinput decimal hasilnya tampil(seharusnya tidak)
-//pada input2 bila button decimal dihapus, maka bila diklik decimal lagi,tidak bisa tampil ke display (seharusnya bisa) karena counterklik decimal saat ini hanya bisa input decimal 1 x
-//cek opClickCounter
+//pada input1 bila button decimal diklik, kemudian number diinput setelahnya, lalu dihapus, dan selanjutnya diinput decimal hasilnya tampil(seharusnya tidak) -done
+//pada input2 bila button decimal dihapus, maka bila diklik decimal lagi,tidak bisa tampil ke display (seharusnya bisa) karena counterklik decimal saat ini hanya bisa input decimal 1 x -done
+//cek decButtonCounter -done
 
 //next, operasi matematika, memproses semua variabel input2 input2 dan operator
 
@@ -41,7 +41,7 @@ keyCalc.addEventListener('click', function (e) {
         delButtonPressed = true;            //penanda bahwa button C sudah di klik
         updateDisplay(e, input1loaded, delButtonPressed);
         loadInput1();
-        decButtonCounter=0;
+        // decButtonCounter=0;
 
     }else if(opLoaded && input1loaded &&input2loaded && keyContent === 'C'){ //cek button C dklik saat input2 masuk
         delButtonPressed2 = true ;
@@ -121,12 +121,20 @@ function updateDisplay(e, state, delButton1,delButton2) {
 
         if(delButton1){                      //cek bila button C diklik
             let keyArr = Array.from(key)    //metode yg digunakan adalah, menangkap key, mengubah jadi array lalu diremove element terakhir+elemen C(karena text content dari button C valuenya adalah C)
-            console.log('keyArr:',keyArr);      //maka arraynya di pop 2x
+            console.log('keyArrDelButton1:',keyArr);      //maka arraynya di pop 2x
+ 
             keyArr.pop();
             keyArr.pop();
+
+            const findDecChar = keyArr.lastIndexOf('.');    //method ini memeriksa adakah karekter decimal di dalam array, 
+            if(findDecChar < 0){                            //bila sudah tidak ada, maka decClickCounter di reset supaya bisa diinput kembali setelah dihapus
+                decButtonCounter = 0;
+            }     
+
             key = keyArr.join('');
             console.log('keyfromkeyArr:',key);
             delButton1=false;
+
             // opClickCounter = 0;
             if(key==''){                //cek bila tombol C diklik sampai input di display kosong
                 clearVariables();        
@@ -136,8 +144,15 @@ function updateDisplay(e, state, delButton1,delButton2) {
             }
         }else if(delButton2){
             let keyArr = Array.from(key);
+
+            // console.log('findDecChar: ',findDecChar);
+            
             keyArr.pop();
             keyArr.pop();
+            const findDecChar = keyArr.lastIndexOf('.');
+            if(findDecChar < 0){
+                decButtonCounter = 0;
+            }     
             key = keyArr.join('');
             delButton2 = false;
             if(key==''){                //cek bila tombol C diklik sampai input di display kosong
