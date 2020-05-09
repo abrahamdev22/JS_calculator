@@ -11,6 +11,9 @@
 //pada input1 bila button decimal diklik, kemudian number diinput setelahnya, lalu dihapus, dan selanjutnya diinput decimal hasilnya tampil(seharusnya tidak) -done
 //pada input2 bila button decimal dihapus, maka bila diklik decimal lagi,tidak bisa tampil ke display (seharusnya bisa) karena counterklik decimal saat ini hanya bisa input decimal 1 x -done
 //cek decButtonCounter -done
+//ppada input 2, bila tombol operator diklik lebih dari 2 x, maka tombol decimal tidak akan bisa diklik lagi jika sudah dihapus
+//Update Bug, Bug di input 2, tidak bisa tampilkan karakter decimal kembali setelah dihapus, bug terjadi ketika di input 2 sudha pernah diklik input decimal
+
 
 //next, operasi matematika, memproses semua variabel input2 input2 dan operator
 
@@ -125,7 +128,7 @@ function updateDisplay(e, state, delButton1,delButton2) {
 
         
         //--------------------------------------------------------------------------------------------------------------------------------------------------------//
-        //proses load ke input2
+      
 
         if(delButton1){                      //cek bila button C diklik
             let keyArr1 = Array.from(key)    //metode yg digunakan adalah, menangkap key, mengubah jadi array lalu diremove element terakhir+elemen C(karena text content dari button C valuenya adalah C)
@@ -134,7 +137,7 @@ function updateDisplay(e, state, delButton1,delButton2) {
             keyArr1.pop();
             keyArr1.pop();
 
-            const findDecChar = keyArr1.lastIndexOf('.');    //method ini memeriksa adakah karekter decimal di dalam array, 
+            const findDecChar = keyArr1.lastIndexOf('.');    //metode ini memeriksa adakah karakter decimal di dalam array, 
             if(findDecChar < 0){                            //bila sudah tidak ada, maka decClickCounter di reset supaya bisa diinput kembali setelah dihapus
                 decButtonCounter = 0;
             }     
@@ -286,11 +289,20 @@ function updateDisplay(e, state, delButton1,delButton2) {
             let inputOne ='';
             let inputTwo ='';
             let keyArr =[];
+            let keyArrDel =[];
+
             
             if(delButton2){         //kondisi jika button C diklik saat di input2
-                keyArr = Array.from(key);   
+            keyArr = Array.from(key);   
                 keyArr.pop();
                 keyArr.pop();
+
+                const findDecChar = keyArr.lastIndexOf('.'); //Testing tambah blok ini, untuk mengatasi tombol decimal hanya bisa diklik di input2 
+                if(findDecChar < 0){
+                    decButtonCounter = 0;
+                }
+                console.log('finddecchar: ', findDecChar);
+
                 key = keyArr.join('');
                 delButton2 = false;  //TESTING
                 console.log('keyDelButton2:', keyArr);
@@ -302,38 +314,43 @@ function updateDisplay(e, state, delButton1,delButton2) {
                     
                 }
                 
-            }else keyArr = Array.from(key);
-            
-            console.log('keyArrOri: ',keyArr);
+            }
+            // else 
 
-            keyArr.forEach(char => { 
                 
+                keyArr = Array.from(key);
+                
+                console.log('keyArrOri: ',keyArr);
+                
+                keyArr.forEach(char => { 
+                    
                 if(char==='.' && !nanChecker){  //cek jika key adalah '.' di input1  , //blok ini supaya karakter decimal tidak masuk ke proses parseInt
-                    inputOne += char;
-                    input1Length++;
-                }else if(char==='.' && nanChecker){  //cek jika key adalah '.' di input2
-                    inputTwo +=char;
-                    input2Length++;
-
+                inputOne += char;
+                input1Length++;
+                }
+                else if(char==='.' && nanChecker){  //cek jika key adalah '.' di input2
+                inputTwo +=char;
+                input2Length++;
+                
                 }else    
                 {
                     bufferKey = parseInt(char);
-                    if(isNaN(bufferKey)){       //cek jika key adalah operator / NaN
-                        nanLength++;
-                        // keyArr.shift()
-                        nanChecker = true;    
-                    }else if(!nanChecker){      //cek jika bukan NaN dan jika input1
-                        // inputOne += bufferKey;
-                        inputOne += char;
-                        input1Length++;
-                    }else {                     //cek jika bukan NaN dan jika input2
-                        // inputTwo +=bufferKey;
-                        inputTwo +=char;
-                        input2Length++;
+                        if(isNaN(bufferKey)){       //cek jika key adalah operator / NaN
+                            nanLength++;
+                            // keyArr.shift()
+                            nanChecker = true;    
+                        }else if(!nanChecker){      //cek jika bukan NaN dan jika input1
+                            // inputOne += bufferKey;
+                            inputOne += char;
+                            input1Length++;
+                        }else {                     //cek jika bukan NaN dan jika input2
+                            // inputTwo +=bufferKey;
+                            inputTwo +=char;
+                            input2Length++;
+                        }
                     }
-                }
-                
-            });
+                    
+                });
             
             loadInput2(inputTwo);       //tampilkan semua input dan operator setelah input2 didapat
             displayCalc.innerHTML = inputOne + operator + inputTwo;
@@ -343,16 +360,17 @@ function updateDisplay(e, state, delButton1,delButton2) {
             console.log('input2length:', input2Length);
             console.log('inputOne: ', inputOne);    
             console.log('inputTwo: ', inputTwo);
-
+            
             if(deletedAll){     //kondisi bila display dihapus sd kosong
                 key = '';       //key dikembalikan ke nilai '',
                 // reloadACbutton();   //tombol delete kembali berubah menjadi AC 
                 deletedAll = false;
                 displayCalc.innerHTML = '0';
             }
-
+        
+            
         }else if(!input2loaded){    //bila operator diklik lebih dari sekali, maka blok ini dijalankan, berfungsi hanya menampilkan satu operator yg dipilih
-                                        //kondisi ini adalah operator dikli lebih dari sekali, dan input2 belum dimasukkan
+            //kondisi ini adalah operator dikli lebih dari sekali, dan input2 belum dimasukkan
             const operator1 = loadOperator(e);
             // console.log('operator1: ',operator1)
             let keyValid='';
