@@ -33,6 +33,7 @@ let decButtonCounter = 0;   //penghitung jumlah klik decimal button
 let firstClick = false;
 let delButtonPressed =false;
 let delButtonPressed2 =false;
+let decInputOne = false; //penanda bahwa button decimal pernah di klik di input 1
 
 keyCalc.addEventListener('click', function (e) {
     
@@ -59,17 +60,17 @@ keyCalc.addEventListener('click', function (e) {
     if(!opLoaded && !input2loaded){ //tangkap input number1, dan cek bahwa operator & input2 belum diinput
         
         
-        if(keyContent === '.'&& decButtonCounter <1){    //cek input decimal &penanda bahwa button decimal sudah pernah di klik    
+        if(keyContent === '.' && decButtonCounter <1){    //cek input decimal &counter bahwa button decimal sudah pernah di klik    
             decButtonCounter++;
             input1loaded = true;
             updateDisplay(e, input1loaded);
             loadInput1();
+            decInputOne = true;
             
         }else
 
         if( keyContent === '0'||keyContent==='1'||keyContent==='2'||keyContent==='3'||keyContent==='4'
-        ||keyContent==='5'||keyContent==='6'||keyContent==='7'||keyContent==='8'||keyContent==='9'){     //cek input apakah input number1, atau '.'
-
+        ||keyContent==='5'||keyContent==='6'||keyContent==='7'||keyContent==='8'||keyContent==='9'){     //cek input apakah input number1
             input1loaded = true;
             updateDisplay(e, input1loaded);
             loadInput1();
@@ -77,7 +78,7 @@ keyCalc.addEventListener('click', function (e) {
             
         } console.log('decButtonCounter: ',decButtonCounter);
         
-    } if(e.target.classList=='key--operator' && input1loaded){ //tangkap input operator, setelah input number1 masuk
+    } if(e.target.classList =='key--operator' && input1loaded){ //tangkap input operator, setelah input number1 masuk
         opLoaded = true;
         opClickCounter ++; 
         loadOperator(e);
@@ -88,15 +89,15 @@ keyCalc.addEventListener('click', function (e) {
         
     } else if(opLoaded && input1loaded){       //tangkap input number2
 
-        if(keyContent == '.'&& decButtonCounter <1){    //tangkap input decimal dan penanda bahwa button decimal sudah pernah di klik    
+        if(keyContent === '.'&& decButtonCounter <1){    //tangkap input decimal dan penanda bahwa button decimal sudah pernah di klik    
             decButtonCounter++;
             input2loaded = true;
             updateDisplay(e, input2loaded);
             
         }else
 
-        if( keyContent == '0'||keyContent=='1'||keyContent=='2'||keyContent=='3'||keyContent=='4'
-        ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){         //tangkap input number2
+        if( keyContent === '0'||keyContent ==='1'||keyContent ==='2'||keyContent ==='3'||keyContent ==='4'
+        ||keyContent ==='5'||keyContent ==='6'||keyContent ==='7'||keyContent ==='8'||keyContent ==='9'){         //tangkap input number2
             input2loaded = true;
             updateDisplay(e, input2loaded);
             // loadInput2();
@@ -115,7 +116,7 @@ function updateDisplay(e, state, delButton1,delButton2) {
     let displayCalc = document.querySelector('.calculator__display');
 
 
-     if(state && opClickCounter < 2){         //proses input 1 dan/atau input2 & kondisi tombol operator diklik sekali 
+     if(state && opClickCounter < 2){         //proses input 1 dan/atau input2 & kondisi tombol operator diklik hanya sekali 
         let deletedAll = false;
         let bufferKey ='';
         let input1Length = 0;
@@ -293,14 +294,23 @@ function updateDisplay(e, state, delButton1,delButton2) {
 
             
             if(delButton2){         //kondisi jika button C diklik saat di input2
-            keyArr = Array.from(key);   
+            keyArr = Array.from(key);   //BUG : di array ini, decimal yg di input 1 , masih kedetek saat di lastIndexOf -- fixed
                 keyArr.pop();
                 keyArr.pop();
-
-                const findDecChar = keyArr.lastIndexOf('.'); //Testing tambah blok ini, untuk mengatasi tombol decimal hanya bisa diklik di input2 
-                if(findDecChar < 0){
-                    decButtonCounter = 0;
+                
+                const findDecChar = keyArr.lastIndexOf('.'); //Testing tambah blok ini, untuk mengatasi tombol decimal hanya bisa diklik di input2, cek adakah karakter decimal  
+                if (!decInputOne) {    
+                    if(findDecChar < 0){
+                        decButtonCounter = 0;
+                    }
+                }else {                                         
+                   const indexDecInputOne = keyArr.findIndex(m => m === '.');
+                   const indexOf = keyArr.indexOf('.', indexDecInputOne + 1);
+                   if(indexOf < 0){
+                       decButtonCounter = 0;
+                   }
                 }
+                
                 console.log('finddecchar: ', findDecChar);
 
                 key = keyArr.join('');
@@ -427,6 +437,7 @@ function clearVariables(){
     decButtonCounter = 0;   //penghitung jumlah klik decimal button
     delButtonPressed = false;
     delButtonPressed2 = false;
+    decInputOne = false;
 
 };
 
