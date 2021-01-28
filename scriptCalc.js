@@ -15,6 +15,7 @@
 //next, operasi matematika, memproses semua variabel input2 input2 dan operator
 
 
+
 keyCalc = document.querySelector('.calculator__keys');
 let input1 ='';     //menampung value input number 1 dari user
 let input2 ='';     //menampung value input number 2 dari user
@@ -32,10 +33,20 @@ let decButtonCounter = 0;   //penghitung jumlah klik decimal button
 let firstClick = false;
 let delButtonPressed =false;
 let delButtonPressed2 =false;
+<<<<<<< Updated upstream
+=======
+let decInputOne = false; //penanda bahwa button decimal pernah di klik di input 1
+// let keyGlobal1 = '';
+let keyG = '';
+>>>>>>> Stashed changes
 
 keyCalc.addEventListener('click', function (e) {
-    
     const keyContent = e.target.textContent;
+    console.log('keyG:', keyG)
+    const keyGlobal1 = keyGlobal(e, keyG);
+    console.log('keyGlobal1:', keyGlobal1);
+
+    console.log('target innerHTML1:',e.target.innerHTML);
 
     if(!opLoaded && input1loaded && keyContent === 'C'){     //cek jika button C diklik, bila diklik sebelum input1 masuk, maka button tidak berfungsi
         delButtonPressed = true;            //penanda bahwa button C sudah di klik
@@ -98,7 +109,6 @@ keyCalc.addEventListener('click', function (e) {
         ||keyContent=='5'||keyContent=='6'||keyContent=='7'||keyContent=='8'||keyContent=='9'){         //tangkap input number2
             input2loaded = true;
             updateDisplay(e, input2loaded);
-            // loadInput2();
         } 
         // opLoaded = false;
     }
@@ -107,6 +117,9 @@ keyCalc.addEventListener('click', function (e) {
 });
 
 function updateDisplay(e, state, delButton1,delButton2) {
+    
+    console.log('target innerHTML2:',e.target.innerHTML);
+
     key = key + (e.target.innerHTML);
     console.log('key :',key);
     let displayCalc = document.querySelector('.calculator__display');
@@ -143,9 +156,13 @@ function updateDisplay(e, state, delButton1,delButton2) {
                 
             }
         }else if(delButton2){
+<<<<<<< Updated upstream
             let keyArr = Array.from(key);
 
             // console.log('findDecChar: ',findDecChar);
+=======
+            let keyArr2 = Array.from(key);
+>>>>>>> Stashed changes
             
             keyArr.pop();
             keyArr.pop();
@@ -162,7 +179,61 @@ function updateDisplay(e, state, delButton1,delButton2) {
                 
             }
         }   
+<<<<<<< Updated upstream
         displayCalc.innerHTML = key; //tampilkan ke display    
+=======
+                                             //blok ini adlah proses parsing input, menjadi input 1, input 2 dan operator   
+        keyArr = Array.from(key);
+        console.log('keyArr: ', keyArr);
+
+        keyArr.forEach(char => { 
+                
+            if(char==='.' && !nanChecker){  //cek jika key adalah '.' di input1  , //blok ini supaya karakter decimal tidak masuk ke proses parseInt
+                inputOne += char;
+                input1Length++;
+            }else if(char==='.' && nanChecker){  //cek jika key adalah '.' di input2
+                inputTwo +=char;
+                input2Length++;
+
+            }else    
+            {
+                bufferKey = parseInt(char);
+                if(isNaN(bufferKey)){       //cek jika key adalah operator / NaN
+                    nanLength++;
+                    // keyArr.shift()
+                    nanChecker = true;    
+                }else if(!nanChecker){      //cek jika bukan NaN dan jika input1
+                    // inputOne += bufferKey;
+                    inputOne += char;
+                    input1Length++;
+                }else {                     //cek jika bukan NaN dan jika input2
+                    // inputTwo +=bufferKey;
+                    inputTwo +=char;
+                    input2Length++;
+                }
+            }
+            if(key==''){                //cek bila tombol C diklik sampai input di display kosong
+                clearVariables();        
+                key = '0';              //variable key diisi dengan 0 supaya yg tampil bukan display kosong tapi angka 0 pada display
+                deletedAll = true;      //penanda di set true bahwa button C diklik sampai display kosong
+                
+            }
+        });
+
+        loadInput2(inputTwo);       
+        displayCalc.innerHTML = inputOne + operator + inputTwo;  //tampilkan semua input dan operator setelah input2 didapat
+        
+        console.log('input1length:',input1Length);
+        console.log('nanlength:', nanLength);
+        console.log('input2length:', input2Length);
+        console.log('inputOne: ', inputOne);    
+        console.log('inputTwo: ', inputTwo);
+
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------//
+        
+        
+        // displayCalc.innerHTML = key; //tampilkan ke display    
+>>>>>>> Stashed changes
 
         if(deletedAll){     //kondisi bila display dihapus sd kosong
             key = '';       //key dikembalikan ke nilai '',
@@ -260,7 +331,7 @@ function updateDisplay(e, state, delButton1,delButton2) {
                     keyValid = keyValid + char
                 }
             })
-            displayCalc.innerHTML = keyValid+operator1;
+            displayCalc.innerHTML = keyValid + operator1;
             // console.log('keyvalid: ',keyValid);
         };
      }
@@ -323,3 +394,53 @@ function reloadACbutton() {
     display.innerHTML = 'AC' ;
 }
 
+<<<<<<< Updated upstream
+=======
+function parseInput(input) {
+
+    let bufferKey ='';
+    let input1Length = 0;
+    let nanLength = 0;
+    let nanChecker = false;
+    let input2Length =0;
+    let inputOne ='';
+    let inputTwo ='';
+    let keyArr =[];
+
+    input.forEach(char => { 
+                
+        if(char==='.' && !nanChecker){  //cek jika key adalah '.' di input1  , //blok ini supaya karakter decimal tidak masuk ke proses parseInt
+            inputOne += char;
+            input1Length++;
+        }else if(char==='.' && nanChecker){  //cek jika key adalah '.' di input2
+            inputTwo +=char;
+            input2Length++;
+
+        }else    
+        {
+            bufferKey = parseInt(char);
+            if(isNaN(bufferKey)){       //cek jika key adalah operator / NaN
+                nanLength++;
+                // input.shift()
+                nanChecker = true;    
+            }else if(!nanChecker){      //cek jika bukan NaN dan jika input1
+                // inputOne += bufferKey;
+                inputOne += char;
+                input1Length++;
+            }else {                     //cek jika bukan NaN dan jika input2
+                // inputTwo +=bufferKey;
+                inputTwo +=char;
+                input2Length++;
+            }
+        }
+        
+    });
+};
+
+function keyGlobal(e, keyG) {
+    keyG = keyG + e.target.textContent;
+    // console.log('keyG:', keyG);
+    return keyG;
+
+};
+>>>>>>> Stashed changes
