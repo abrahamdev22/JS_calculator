@@ -1,5 +1,5 @@
 inputKey = document.querySelector('.calculator_keys');
-displayTop = '.input-display';
+displayTop = document.querySelector('.input-display');
 
 
 let inputField = '';
@@ -8,6 +8,8 @@ let operator = ''; //variable untuk menampung input operator dari user
 let inputDua = ''; //variable untuk menampung input numerik dan decimal dari user
 let decimalFlag = false; //penanda input decimal sudah diklik
 let inputSatuFlag = false; //penanda variable input satu sudah diload, bila true maka input operator aktif, atau user bisa menginput key opertator
+let inputDuaFlag = false; //penanda variable inputDua sudah bisa diload, yaitu dengan syarat inputSatu dan operator sudah terpenuhi/terisi
+let operatorDisplay = '';
 
 
 // Baca semua input dari user
@@ -23,15 +25,15 @@ if(keyDataSet==='delete'){
 }
 
 
-// Step 1, Filter input , apakah numerik dan decimal
+// Phase 1, Filter input , apakah numerik dan decimal
 // =============================================================================================================
 if (keyDataSet==='decimal' && !decimalFlag) {
     inputSatu = inputSatu + loadVariableInputSatu(keyContent);
     decimalFlag = true;
 } 
 
-while(!keyDataSet){
-    console.log('numerik',key.textContent);
+while (!keyDataSet){
+    // console.log('numerik',key.textContent);
     inputSatu = inputSatu + loadVariableInputSatu(keyContent);
     inputSatuFlag = true;
     break;
@@ -41,13 +43,24 @@ console.log('inputSatu:',inputSatu);
 
 
 // Tampilkan ke display
-tampilDisplayInput(inputSatu, displayTop);
+tampilDisplayInput(inputSatu, '.input-display');
 
 
 
-// Step 2, filter input, apakah tombol operator diklik
+// Phase 2, filter input, apakah tombol operator diklik
 // =============================================================================================================
 
+// Cek apakah tombol operator di klik
+if (keyDataSet !=='decimal' && keyDataSet && inputSatuFlag){
+    // console.log('keyDataSet:', keyDataSet);
+    // console.log('tombol operator!');
+    operator = loadVariable(keyDataSet);
+    console.log('operator', operator);
+    console.log('operator display: ',key.textContent);
+    operatorDisplay = key.textContent;
+    inputDuaFlag = true;
+    displayTop.innerHTML = displayTop.innerHTML + tampilDisplayInput(operatorDisplay, '.input-display');
+}    
 
 
 });
@@ -65,5 +78,14 @@ function loadVariableInputSatu (inputUser){
 function tampilDisplayInput(input, displayCalc) {
     let display = document.querySelector(displayCalc);
     display.innerHTML = input;
-    // return display.innerHTML;
+    return display.innerHTML;
 }
+
+function loadVariable(inputUser) {
+    let input = '';
+    input = inputUser;
+    return input;
+}
+
+
+
